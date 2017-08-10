@@ -1,0 +1,22 @@
+Hadoop streaming is a utility that comes with the Hadoop distribution. 
+
+
+Eg:
+
+$HADOOP_HOME/bin/hadoop  jar $HADOOP_HOME/hadoop-streaming.jar \
+    -input myInputDirs \
+    -output myOutputDir \
+    -mapper /bin/cat \
+    -reducer /bin/wc
+
+
+In the above example, both the mapper and the reducer are executables that read the input from stdin (line by line) 
+and emit the output to stdout. The utility will create a Map/Reduce job, submit the job to an appropriate cluster, 
+and monitor the progress of the job until it completes.
+
+When an executable is specified for mappers, each mapper task will launch the executable as a separate process when the mapper is initialized. 
+As the mapper task runs, it converts its inputs into lines and feed the lines to the stdin of the process. 
+In the meantime, the mapper collects the line oriented outputs from the stdout of the process and converts each line into a key/value pair,
+ which is collected as the output of the mapper. 
+By default, the prefix of a line up to the first tab character is the key and the rest of the line (excluding the tab character) will be the value. 
+If there is no tab character in the line, then entire line is considered as key and the value is null. 
