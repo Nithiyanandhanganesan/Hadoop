@@ -1,0 +1,43 @@
+What is a SerDe?
+The SerDe interface allows you to instruct Hive as to how a record should be processed. 
+The Deserializer interface takes a string or binary representation of a record, and translates it into a Java object that Hive can manipulate. 
+The Serializer, however, will take a Java object that Hive has been working with, and turn it into something that Hive can write to HDFS or another supported system. 
+
+Deserializers =>> execute SELECT statements.
+Serializers   =>> INSERT-SELECT statement.
+
+HDFS files --> InputFileFormat --> <key, value> --> Deserializer --> Row object
+Row object --> Serializer --> <key, value> --> OutputFileFormat --> HDFS files
+
+Hive currently uses these FileFormat classes to read and write HDFS files:
+  TextInputFormat/HiveIgnoreKeyTextOutputFormat: These 2 classes read/write data in plain text file format.
+  SequenceFileInputFormat/SequenceFileOutputFormat: These 2 classes read/write data in Hadoop SequenceFile format.
+
+Hive currently uses these SerDe classes to serialize and deserialize data:
+MetadataTypedColumnsetSerDe:
+      This SerDe is used to read/write delimited records like CSV, tab-separated control-A separated records (sorry, quote is not supported yet).
+
+LazySimpleSerDe: 
+     This SerDe can be used to read the same data format as MetadataTypedColumnsetSerDe and TCTLSeparatedProtocol, 
+     however, it creates Objects in a lazy way which provides better performance.
+
+ThriftSerDe: 
+     This SerDe is used to read/write Thrift serialized objects. The class file for the Thrift object must be loaded first.
+
+DynamicSerDe: 
+    This SerDe also read/write Thrift serialized objects, but it understands Thrift DDL so the schema of the object can be provided at runtime.
+    Also it supports a lot of different protocols, including TBinaryProtocol, TJSONProtocol, TCTLSeparatedProtocol (which writes data in delimited records).
+
+
+Developing a SerDe:
+======================
+
+To start, we can write a basic template for a SerDe, which utilizes the Hive serde2 API (org.apache.hadoop.hive.serde2). 
+
+
+
+
+
+
+
+
